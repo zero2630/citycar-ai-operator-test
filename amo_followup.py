@@ -14,6 +14,8 @@ def pages(path, params=None):
     while url:
         response = requests.get(url, headers=HEADERS, params=params, timeout=30)
         response.raise_for_status()
+        if response.status_code == 204:
+            return
         data = response.json()
         yield from data.get("_embedded", {}).get(path, [])
         url = data.get("_links", {}).get("next", {}).get("href")
